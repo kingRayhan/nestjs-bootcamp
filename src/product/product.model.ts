@@ -1,16 +1,13 @@
-import { v4 } from 'uuid';
+import { prop, ModelOptions } from '@typegoose/typegoose';
 
+@ModelOptions({ schemaOptions: { timestamps: true } })
 export class Product {
-  //   public title: string;
-  //   public description: string;
-  //   public price: number;
-  public _id?: string;
+  @prop()
+  public title: string;
 
-  constructor(
-    public title: string,
-    public description: string,
-    public price: number,
-  ) {
-    this._id = v4();
-  }
+  @prop()
+  public description: string;
+
+  @prop()
+  public price: number;
 }

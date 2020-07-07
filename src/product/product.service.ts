@@ -1,37 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from './product.model';
 import { CreateProductInput, UpdateProductInput } from './products.input';
+import { InjectModel } from 'nestjs-typegoose';
+import { index, destroy } from 'quick-crud';
+import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
+import { ResourceList, ResoucePagination } from 'src/shared/types';
 
 @Injectable()
 export class ProductService {
-  products: Product[] = [];
+  constructor(
+    @InjectModel(Product)
+    private readonly model: ReturnModelType<typeof Product>,
+  ) {}
 
-  getProducts(): Product[] {
-    return this.products;
+  async getProducts(
+    pagination: ResoucePagination,
+  ): Promise<ResourceList<DocumentType<Product>>> {
+    if (pagination.limit) pagination.limit = +pagination.limit;
+    if (pagination.page) pagination.limit = +pagination.page;
+
+    return index({ model: this.model, paginationOptions: pagination });
   }
 
-  createProduct(data: CreateProductInput): Product {
-    const product = new Product(data.title, data.description, data.price);
-    this.products.unshift(product);
-    return product;
+  createProduct(data: CreateProductInput): Promise<DocumentType<Product>> {
+    return this.model.create(data);
   }
 
-  updateProduct(_id: string, updateData: UpdateProductInput): Product {
-    const index = this.products.findIndex(p => p._id == _id);
-    this.products[index].title = updateData.title;
-    this.products[index].description = updateData.description;
-    this.products[index].price = updateData.price;
-    return this.products[index];
+  async updateProduct(
+    _id: string,
+    updateData: UpdateProductInput,
+  ): Promise<DocumentType<Product>> {
+    return this.model.findOneAndUpdate({ _id }, updateData, {
+      new: true,
+    });
   }
 
-  getProductById(_id: string): Product {
-    return this.products.find(p => p._id == _id);
+  async getProductById(_id: string): Promise<DocumentType<Product>> {
+    try {
+      const product = await this.model.findById(_id);
+      return product;
+    } catch (error) {
+      throw new NotFoundException();
+    }
   }
 
-  deleteProduct(_id: string): void {
-    if (!this.getProductById(_id))
-      throw new NotFoundException('Product not found or already deleted');
-
-    this.products = this.products.filter(product => product._id !== _id);
+  async deleteProduct(_id: string): Promise<DocumentType<Product>> {
+    try {
+      return destroy({ model: this.model, where: { _id } });
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }
