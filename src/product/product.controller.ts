@@ -11,11 +11,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Product } from './product.model';
+import { Product } from './product.type';
 import { CreateProductInput, UpdateProductInput } from './products.input';
 import { DocumentType } from '@typegoose/typegoose';
-import { ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { ResourceList, ResoucePagination } from 'src/shared/types';
+import { ApiPagination } from 'src/utils/ApiPagination.decorator';
 
 @ApiTags('Product')
 @Controller('products')
@@ -23,18 +24,7 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Get()
-  @ApiQuery({
-    name: 'page',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'sort',
-    required: false,
-  })
+  @ApiPagination()
   async index(
     @Query() query: ResoucePagination,
   ): Promise<ResourceList<DocumentType<Product>>> {

@@ -16,6 +16,9 @@ export class CreateProductInput {
   @ApiProperty({ description: 'প্রোডাক্ট এর দাম' })
   @IsNotEmpty()
   public price: number;
+
+  @ApiProperty({ description: 'ক্যাটাগরি সমুহের এর আইডি' })
+  public categories: string[];
 }
 
 export class UpdateProductInput {
@@ -31,4 +34,7 @@ export class UpdateProductInput {
 
   @ApiProperty({ description: 'প্রোডাক্ট এর দাম' })
   public price: number;
+
+  @ApiProperty({ description: 'ক্যাটাগরি সমুহের এর আইডি' })
+  public categories: string[];
 }
