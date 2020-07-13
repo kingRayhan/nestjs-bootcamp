@@ -9,6 +9,7 @@ import {
   Param,
   Put,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.type';
@@ -17,6 +18,7 @@ import { DocumentType } from '@typegoose/typegoose';
 import { ApiTags } from '@nestjs/swagger';
 import { ResourceList, ResoucePagination } from 'src/shared/types';
 import { ApiPagination } from 'src/utils/ApiPagination.decorator';
+import { HandleInvalidObjectId } from 'src/utils/mongodb.filters';
 
 @ApiTags('Product')
 @Controller('products')
@@ -37,7 +39,6 @@ export class ProductController {
   }
 
   @Post()
-  @UsePipes(ValidationPipe)
   async store(
     @Body() data: CreateProductInput,
   ): Promise<DocumentType<Product>> {
@@ -45,7 +46,6 @@ export class ProductController {
   }
 
   @Put(':_id')
-  @UsePipes(ValidationPipe)
   async update(
     @Body() data: UpdateProductInput,
     @Param('_id') _id: string,

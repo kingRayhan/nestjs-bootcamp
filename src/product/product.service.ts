@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UseFilters } from '@nestjs/common';
 import { Product } from './product.type';
 import { CreateProductInput, UpdateProductInput } from './products.input';
 import { InjectModel } from 'nestjs-typegoose';
@@ -53,19 +53,16 @@ export class ProductService {
   }
 
   async getProductById(_id: string): Promise<DocumentType<Product>> {
-    try {
-      const product = await this.model.findById(_id);
-      return product;
-    } catch (error) {
-      throw new NotFoundException();
-    }
+    const product = await this.model.findById(_id);
+    if (!product) throw new NotFoundException();
+
+    return product;
   }
 
   async deleteProduct(_id: string): Promise<DocumentType<Product>> {
-    try {
-      return destroy({ model: this.model, where: { _id } });
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+    const product = await this.getProductById(_id);
+    if (!product) throw new NotFoundException();
+
+    return destroy({ model: this.model, where: { _id } });
   }
 }

@@ -5,6 +5,9 @@ import { ProductModule } from './product/product.module';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoryModule } from './category/category.module';
+import { AdminModule } from './admin/admin.module';
+import { AuthModule } from './auth/auth.module';
+import { SessionModule } from './session/session.module';
 
 const config = new ConfigService();
 
@@ -22,6 +25,9 @@ const config = new ConfigService();
     }),
     ProductModule,
     CategoryModule,
+    AdminModule,
+    AuthModule,
+    SessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
