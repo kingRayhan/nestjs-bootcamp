@@ -9,6 +9,7 @@ import { SessionService } from 'src/session/session.service';
 import { UserService } from '../user/user.service';
 import { CreateUserInput } from '../user/user.input';
 import { User } from 'src/user/user.type';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
@@ -36,16 +37,22 @@ export class AuthService {
     return session;
   }
 
+  async logoutAdmin(adminId: string): Promise<any> {
+    this.sessionService.deleteSession(adminId, AUTH_DOMAIN.ADMIN);
+    return { message: 'Logged out successfully' };
+  }
+
   async registerUser(data: CreateUserInput): Promise<User> {
     return this.userService.create(data);
   }
 
   async loginUser(data: LoginInput): Promise<AuthPayload> {
     const { identifier, password } = data;
-
+    // get the user
     const user = await this.userService.getByIdentifier(identifier);
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
+    // Match password
     const passwordMatched = await user.comparePassword(password);
     if (!passwordMatched)
       throw new UnauthorizedException('Invalid credentials');
@@ -55,5 +62,10 @@ export class AuthService {
       AUTH_DOMAIN.USER,
     );
     return session;
+  }
+
+  async logoutUser(userId: string): Promise<any> {
+    this.sessionService.deleteSession(userId, AUTH_DOMAIN.USER);
+    return { message: 'Logged out successfully' };
   }
 }

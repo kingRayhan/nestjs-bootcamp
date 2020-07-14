@@ -28,7 +28,7 @@ export class SessionService {
     sub: string,
     domain: AUTH_DOMAIN,
   ): Promise<DocumentType<Session>> {
-    const token = this.jwt.sign({ sub });
+    const token = this.jwt.sign({ sub, domain });
     return this.model.create({ sub, domain, token });
   }
 

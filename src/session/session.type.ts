@@ -1,5 +1,6 @@
 import { AUTH_DOMAIN } from 'src/auth/auth.type';
 import { prop } from '@typegoose/typegoose';
+import { Request } from 'express';
 
 export class Session {
   @prop()
@@ -13,7 +14,6 @@ export class Session {
 }
 
 export interface JWTPayload {
-  iss: string;
   sub: string;
   domain: AUTH_DOMAIN;
 }

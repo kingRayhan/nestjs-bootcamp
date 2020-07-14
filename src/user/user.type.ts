@@ -8,10 +8,10 @@ export class User {
   @prop({ required: true })
   name: string;
 
-  @prop()
+  @prop({ unique: true })
   username: string;
 
-  @prop()
+  @prop({ unique: true })
   email: string;
 
   @prop()

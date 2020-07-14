@@ -1,13 +1,16 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAdminInput } from 'src/admin/admin.input';
 import { DocumentType } from '@typegoose/typegoose';
 import { Admin } from 'src/admin/admin.type';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginInput } from './auth.input';
 import { AuthPayload } from './auth.type';
 import { CreateUserInput } from '../user/user.input';
 import { User } from 'src/user/user.type';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { SessionRequest } from 'src/session/session.type';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -26,6 +29,13 @@ export class AuthController {
     return this.authService.loginAdmin(data);
   }
 
+  @Post('/admin/logout')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  adminLogout(@Req() req: SessionRequest): Promise<boolean> {
+    return this.authService.logoutAdmin(req.user.sub);
+  }
+
   @Post('/user/register')
   registerUser(@Body() data: CreateUserInput): Promise<User> {
     return this.authService.registerUser(data);
@@ -34,5 +44,12 @@ export class AuthController {
   @Post('/user/login')
   loginUser(@Body() data: LoginInput): Promise<AuthPayload> {
     return this.authService.loginUser(data);
+  }
+
+  @Post('/user/logout')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  userLogout(@Req() req: SessionRequest): Promise<boolean> {
+    return this.authService.logoutUser(req.user.sub);
   }
 }
