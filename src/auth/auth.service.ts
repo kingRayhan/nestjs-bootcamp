@@ -6,12 +6,16 @@ import { Admin } from 'src/admin/admin.type';
 import { LoginInput } from './auth.input';
 import { AuthPayload, AUTH_DOMAIN } from './auth.type';
 import { SessionService } from 'src/session/session.service';
+import { UserService } from '../user/user.service';
+import { CreateUserInput } from '../user/user.input';
+import { User } from 'src/user/user.type';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly adminService: AdminService,
     private readonly sessionService: SessionService,
+    private readonly userService: UserService,
   ) {}
 
   async registerAdmin(data: CreateAdminInput): Promise<DocumentType<Admin>> {
@@ -29,6 +33,27 @@ export class AuthService {
       AUTH_DOMAIN.ADMIN,
     );
 
+    return session;
+  }
+
+  async registerUser(data: CreateUserInput): Promise<User> {
+    return this.userService.create(data);
+  }
+
+  async loginUser(data: LoginInput): Promise<AuthPayload> {
+    const { identifier, password } = data;
+
+    const user = await this.userService.getByIdentifier(identifier);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const passwordMatched = await user.comparePassword(password);
+    if (!passwordMatched)
+      throw new UnauthorizedException('Invalid credentials');
+
+    const session = await this.sessionService.findOrCreateSession(
+      user._id,
+      AUTH_DOMAIN.USER,
+    );
     return session;
   }
 }

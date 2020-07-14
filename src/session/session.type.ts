@@ -11,3 +11,13 @@ export class Session {
   @prop()
   sub: string;
 }
+
+export interface JWTPayload {
+  iss: string;
+  sub: string;
+  domain: AUTH_DOMAIN;
+}
+
+export interface SessionRequest extends Request {
+  user: JWTPayload;
+}

@@ -8,6 +8,7 @@ import { CategoryModule } from './category/category.module';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
+import { UserModule } from './user/user.module';
 
 const config = new ConfigService();
 
@@ -28,6 +29,7 @@ const config = new ConfigService();
     AdminModule,
     AuthModule,
     SessionModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

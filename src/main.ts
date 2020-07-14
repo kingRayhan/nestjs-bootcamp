@@ -25,5 +25,7 @@ async function bootstrap() {
   app.useGlobalFilters(new HandleInvalidObjectId());
 
   await app.listen(config.get('PORT') || 3000);
+
+  console.log('Server is running...');
 }
 bootstrap();
