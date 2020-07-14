@@ -6,6 +6,8 @@ import { Admin } from 'src/admin/admin.type';
 import { ApiTags } from '@nestjs/swagger';
 import { LoginInput } from './auth.input';
 import { AuthPayload } from './auth.type';
+import { CreateUserInput } from '../user/user.input';
+import { User } from 'src/user/user.type';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -24,8 +26,13 @@ export class AuthController {
     return this.authService.loginAdmin(data);
   }
 
-  // @Post('admin/logout')
-  // async logoutAdmin(@Body() data: LoginInput): Promise<AuthPayload> {
-  //   return this.authService.loginAdmin(data);
-  // }
+  @Post('/user/register')
+  registerUser(@Body() data: CreateUserInput): Promise<User> {
+    return this.authService.registerUser(data);
+  }
+
+  @Post('/user/login')
+  loginUser(@Body() data: LoginInput): Promise<AuthPayload> {
+    return this.authService.loginUser(data);
+  }
 }
