@@ -22,7 +22,7 @@ async function bootstrap() {
 
   const config = new ConfigService();
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HandleQuickCrudException());
   app.useGlobalFilters(new HandleInvalidObjectId());
 

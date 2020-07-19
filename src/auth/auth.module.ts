@@ -6,10 +6,11 @@ import { SessionModule } from 'src/session/session.module';
 import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { JWTStrategy } from './passport-strategies/jwt.strategy';
+import { FacebookStrategy } from './passport-strategies/facebook.strategy';
 
 @Module({
   imports: [AdminModule, SessionModule, UserModule, PassportModule],
   controllers: [AuthController],
-  providers: [AuthService, JWTStrategy],
+  providers: [AuthService, JWTStrategy, FacebookStrategy],
 })
 export class AuthModule {}

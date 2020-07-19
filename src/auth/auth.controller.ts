@@ -52,4 +52,23 @@ export class AuthController {
   userLogout(@Req() req: SessionRequest): Promise<boolean> {
     return this.authService.logoutUser(req.user.sub);
   }
+
+  @Get('/facebook')
+  @UseGuards(AuthGuard('facebook'))
+  logintofacebook() {
+    return 'heyyy';
+  }
+
+  @Get('/facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  logintofacebookCallback(@Req() req) {
+    return req.user;
+  }
+
+  @Get('/user/me')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  getMe(@Req() req: SessionRequest) {
+    return this.authService.getMe(req.user.sub);
+  }
 }

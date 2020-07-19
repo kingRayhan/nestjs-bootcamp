@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UseFilters } from '@nestjs/common';
 import { Product } from './product.type';
 import { CreateProductInput, UpdateProductInput } from './products.input';
 import { InjectModel } from 'nestjs-typegoose';
-import { index, destroy } from 'quick-crud';
+import { index, destroy, store } from 'quick-crud';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { ResourceList, ResoucePagination } from 'src/shared/types';
 import { Types } from 'mongoose';
@@ -17,23 +17,14 @@ export class ProductService {
   async getProducts(
     pagination: ResoucePagination,
   ): Promise<ResourceList<DocumentType<Product>>> {
-    if (pagination.limit) pagination.limit = +pagination.limit;
-    if (pagination.page) pagination.limit = +pagination.page;
-
     return index({
       model: this.model,
       paginationOptions: pagination,
-      // populateOptions: {
-      //   path: 'categories',
-      // },
     });
   }
 
   createProduct(data: CreateProductInput): Promise<DocumentType<Product>> {
-    return this.model.create({
-      ...data,
-      categories: data.categories.map(c => Types.ObjectId(c)),
-    });
+    return store({ model: this.model, data });
   }
 
   async updateProduct(

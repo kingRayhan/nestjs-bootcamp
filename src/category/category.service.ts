@@ -14,9 +14,6 @@ export class CategoryService {
   ) {}
 
   indexService(query: ResoucePagination): Promise<ResourceList<Category>> {
-    if (query.limit) query.limit = +query.limit;
-    if (query.page) query.limit = +query.page;
-
     return index({
       model: this.model,
       paginationOptions: query,
@@ -38,7 +35,7 @@ export class CategoryService {
       where: { _id },
       populateOptions: {
         path: 'products',
-        select: '-categories title description',
+        select: '-categories title description price',
       },
     });
   }

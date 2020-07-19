@@ -12,10 +12,13 @@ export class User {
   username: string;
 
   @prop({ unique: true })
-  email: string;
+  email?: string;
 
   @prop()
   password: string;
+
+  @prop()
+  fbUID?: string;
 
   comparePassword(passwordText: string): Promise<boolean> {
     return compare(passwordText, this.password);

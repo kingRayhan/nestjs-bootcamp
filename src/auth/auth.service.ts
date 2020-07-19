@@ -68,4 +68,8 @@ export class AuthService {
     this.sessionService.deleteSession(userId, AUTH_DOMAIN.USER);
     return { message: 'Logged out successfully' };
   }
+
+  async getMe(userId: string): Promise<User> {
+    return this.userService.getById(userId);
+  }
 }

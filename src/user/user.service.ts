@@ -4,6 +4,7 @@ import { User } from './user.type';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { store, show } from 'quick-crud';
 import { CreateUserInput } from './user.input';
+import { FacebookProfilePayload } from 'src/shared/types';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,29 @@ export class UserService {
 
   async getById(_id: string): Promise<DocumentType<User>> {
     return show({ model: this.model, where: { _id } });
+  }
+
+  async getByfbUID(uid: string): Promise<DocumentType<User>> {
+    return this.model.findOne({ fbUID: uid });
+  }
+
+  async findOrCreateWithFacebook(
+    profile: FacebookProfilePayload,
+  ): Promise<DocumentType<User>> {
+    const accountExists = await this.getByfbUID(profile.id);
+
+    if (!accountExists) {
+      const generatedPassword = `${profile.displayName}123`;
+
+      return this.model.create({
+        name: profile.displayName,
+        username: profile.displayName.split(' ').join('-'),
+        password: generatedPassword,
+        fbUID: profile.id,
+      });
+    }
+
+    return accountExists;
   }
 
   async getByUsername(username: string): Promise<DocumentType<User>> {
