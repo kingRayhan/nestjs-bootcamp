@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UseFilters } from '@nestjs/common';
 import { Product } from './product.type';
 import { CreateProductInput, UpdateProductInput } from './products.input';
 import { InjectModel } from 'nestjs-typegoose';
-import { index, destroy, store } from 'quick-crud';
+import { index, destroy, store, update } from 'quick-crud';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { ResourceList, ResoucePagination } from 'src/shared/types';
 import { Types } from 'mongoose';
@@ -29,18 +29,9 @@ export class ProductService {
 
   async updateProduct(
     _id: string,
-    updateData: UpdateProductInput,
+    data: UpdateProductInput,
   ): Promise<DocumentType<Product>> {
-    return this.model.findOneAndUpdate(
-      { _id },
-      {
-        ...updateData,
-        categories: updateData.categories.map(c => Types.ObjectId(c)),
-      },
-      {
-        new: true,
-      },
-    );
+    return update({ model: this.model, data, where: { _id } });
   }
 
   async getProductById(_id: string): Promise<DocumentType<Product>> {

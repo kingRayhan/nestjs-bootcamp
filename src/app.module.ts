@@ -9,11 +9,18 @@ import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
 import { UserModule } from './user/user.module';
+import { join } from 'path';
+
+import { GraphQLModule } from '@nestjs/graphql';
+import { AppResolver } from './app.resolver';
 
 const config = new ConfigService();
 
 @Module({
   imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
     ConfigModule.forRoot({
       envFilePath:
         process.env.NODE_ENV === 'production' ? 'envFilePath.prod' : '.env',
@@ -32,6 +39,6 @@ const config = new ConfigService();
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AppResolver],
 })
 export class AppModule {}

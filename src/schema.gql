@@ -1,0 +1,39 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Category {
+  _id: ID!
+  name: String!
+  slug: String
+  products: [Product!]
+}
+
+type Product {
+  _id: ID!
+  title: String!
+  description: String!
+  price: Float!
+  createdAt: String!
+  updatedAt: String!
+  categories: [Category!]
+}
+
+type ProductPayload {
+  resourceCount: Int!
+  pageCount: Int!
+  currentPage: Int!
+  data: [Product!]!
+}
+
+type Query {
+  products(pagination: ResoucePagination): ProductPayload!
+  product(_id: String!): Product!
+  hello(naam: String!): String!
+}
+
+input ResoucePagination {
+  page: Int
+  limit: Int
+  sort: String
+}
